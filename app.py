@@ -18,19 +18,18 @@ if isinstance(movies_list, dict):
 else:
   movies = movies_list
 
-# Automatically combine chunk parts into similarity.pkl if it doesn't exist
-if not os.path.exists("similarity.pkl"):
-  with st.spinner("Reassembling similarity file from parts... Please wait."):
-    with open("similarity.pkl", "wb") as outfile:
-      i = 0
-      while True:
-        part_name = f"similarity_part_{i}.pkl"
-        if os.path.exists(part_name):
-          with open(part_name, "rb") as infile:
-            outfile.write(infile.read())
-          i += 1
-        else:
-          break
+# Always safely re-combine chunk parts into similarity.pkl on startup
+with st.spinner("Reassembling similarity file from parts... Please wait."):
+  with open("similarity.pkl", "wb") as outfile:
+    i = 0
+    while True:
+      part_name = f"similarity_part_{i}.pkl"
+      if os.path.exists(part_name):
+        with open(part_name, "rb") as infile:
+          outfile.write(infile.read())
+        i += 1
+      else:
+        break
 
 similarity = pickle.load(open("similarity.pkl", "rb"))
 
